@@ -1,0 +1,84 @@
+import numpy as np
+import pandas as pd
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.express as px
+import plotly.graph_objects as go
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, f1_score, accuracy_score, classification_report
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
+
+import os
+for dirname, _, filenames in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+data = pd.read_csv('/kaggle/input/heart-disease-uci/heart.csv')
+data.head(10).style.applymap(lambda x : "background-color: #fcc7c7")
+def EDA(df):
+    
+    print('\033[1m' +'EXPLORATORY DATA ANALYSIS :'+ '\033[0m\n')
+    print('\033[1m' + 'Shape of the data (rows, columns):' + '\033[0m')
+    print(df.shape, 
+          '\n------------------------------------------------------------------------------------\n')
+    
+    print('\033[1m' + 'All columns from the dataframe :' + '\033[0m')
+    print(df.columns, 
+          '\n------------------------------------------------------------------------------------\n')
+    
+    print('\033[1m' + 'Datatpes and Missing values:' + '\033[0m')
+    print(df.info(), 
+          '\n------------------------------------------------------------------------------------\n')
+    
+    for col in df.columns:
+        print('\033[1m' + 'Unique values in {} :'.format(col) + '\033[0m',len(data[col].unique()))
+    print('\n------------------------------------------------------------------------------------\n')
+ print('\033[1m' + 'Summary statistics for the data :' + '\033[0m')
+    print(df.describe(include='all'), 
+          '\n------------------------------------------------------------------------------------\n')
+    
+        
+    print('\033[1m' + 'Memory used by the data :' + '\033[0m')
+    print(df.memory_usage(), 
+          '\n------------------------------------------------------------------------------------\n')
+    
+    print('\033[1m' + 'Number of duplicate values :' + '\033[0m')
+    print(df.duplicated().sum())
+          
+EDA(data)
+df1 = data.copy()
+
+cols = df1.columns
+
+plt.figure(figsize = (16, 10), dpi = 100)
+
+corr = df1.corr()
+
+mask = np.zeros_like(corr, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+
+
+sns.heatmap(corr,
+            mask = mask,
+            cmap = 'Reds',
+            vmax=.3,
+            annot = True,
+            linewidths = 0.5,
+            fmt = ".2f",
+            alpha = 0.7)
+
+hfont = {'fontname':'monospace'}
+plt.xticks(**hfont)
+plt.yticks(**hfont)
+
+plt.title('Correlation matrix',
+          family = 'monospace',
+          fontsize = 20,
+          weight = 'semibold',
+          color = '#964545')
+
+plt.show()
